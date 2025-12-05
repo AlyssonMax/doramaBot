@@ -11,9 +11,9 @@ TOKEN = os.getenv("BOT_TOKEN")
 link_pagamento_unico = "https://pay.cakto.com.br/zngtq6q_676932"
 link_assinatura_plus = "https://pay.cakto.com.br/3aec7u6_676933"
 
-def start(update, context):
-    if update.message:
-        update.message.reply_text("""
+
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    mensagem = ("""
             "📺✨ Bem-vindo(a) ao seu canal de Doramas e Séries Asiáticas! ✨🎬
 
 Aqui você encontra novelas, k-dramas, c-dramas, j-dramas e muito mais, com acesso fácil e atualizado! 💖
@@ -31,30 +31,10 @@ Escolha como quer aproveitar todo esse conteúdo:
 OBS: Você receberá o link para o grupo POR EMAIL após confirmação do pagamento.
 
 Prepare a pipoca e vamos maratonar juntos! 🍿🔥"""
-        )
-    else:
-        update.callback_query.message.reply_text(
-            """
-            "📺✨ Bem-vindo(a) ao seu canal de Doramas e Séries Asiáticas! ✨🎬
+    )
+    await update.message.reply_text(mensagem, parse_mode="Markdown")
 
-Aqui você encontra novelas, k-dramas, c-dramas, j-dramas e muito mais, com acesso fácil e atualizado! 💖
-
-Escolha como quer aproveitar todo esse conteúdo:
-
-💳 Acesso 7 dias — Pagamento Único
-➡️ Assista tudo por apenas R$ 11,99
-
-⭐ Assinatura Plus Mensal
-➡️ Tenha acesso contínuo por R$ 5,99/mês
-
-👉 Toque em /pagamento e selecione a opção ideal para você!
-
-OBS: Você receberá o link para o grupo POR EMAIL após confirmação do pagamento.
-
-Prepare a pipoca e vamos maratonar juntos! 🍿🔥"""
-        )
-
-def pagamento(update, context):
+async def pagamento(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
         [
             InlineKeyboardButton("💳 Pagamento Único", callback_data="unico"),
@@ -62,31 +42,27 @@ def pagamento(update, context):
         ]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
+    await update.message.reply_text("Qual forma de pagamento deseja?", reply_markup=reply_markup)
 
-    if update.message:
-        update.message.reply_text("Qual forma de pagamento deseja?", reply_markup=reply_markup)
-    else:
-        update.callback_query.message.reply_text("Qual forma de pagamento deseja?", reply_markup=reply_markup)
-
-def button(update, context):
+async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
-    query.answer()
+    await query.answer()
 
     if query.data == "unico":
-        query.edit_message_text(f"🔗 Pagamento Único:\n{link_pagamento_unico}")
+        await query.edit_message_text(f"🔗 Pagamento Único:\n{link_pagamento_unico}")
     elif query.data == "plus":
-        query.edit_message_text(f"⭐ Assinatura Plus Mensal:\n{link_assinatura_plus}")
+        await query.edit_message_text(f"⭐ Assinatura Plus Mensal:\n{link_assinatura_plus}")
 
-def main():
-    updater = Updater(TOKEN, use_context=True)
-    dp = updater.dispatcher
+async def main():
+    app = ApplicationBuilder().token(TOKEN).build()
 
-    dp.add_handler(CommandHandler("start", start))
-    dp.add_handler(CommandHandler("pagamento", pagamento))
-    dp.add_handler(CallbackQueryHandler(button))
+    app.add_handler(CommandHandler("start", start))
+    app.add_handler(CommandHandler("pagamento", pagamento))
+    app.add_handler(CallbackQueryHandler(button))
 
-    updater.start_polling()
-    updater.idle()
+    print("🤖 Bot iniciado!")
+    await app.run_polling()
 
 if __name__ == "__main__":
-    main()
+    import asyncio
+    asyncio.run(main())
