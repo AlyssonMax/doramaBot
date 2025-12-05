@@ -1,11 +1,12 @@
-from telegram.ext import Updater, CommandHandler, CallbackQueryHandler
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 import logging
+import os
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
+from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, ContextTypes
 
 # Logging para evitar quebra de execução em erros
 logging.basicConfig(level=logging.INFO)
 
-TOKEN = "8511770355:AAF3pMBihtL2MSdeTz6Z8KdQgHcIfZx0ww0"  # ⚠️ substitua seu token aqui
+TOKEN = os.getenv("BOT_TOKEN")
 
 link_pagamento_unico = "https://pay.cakto.com.br/zngtq6q_676932"
 link_assinatura_plus = "https://pay.cakto.com.br/3aec7u6_676933"
