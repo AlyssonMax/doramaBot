@@ -12,7 +12,7 @@ link_pagamento_unico = "https://pay.cakto.com.br/zngtq6q_676932"
 link_assinatura_plus = "https://pay.cakto.com.br/3aec7u6_676933"
 
 
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     mensagem = ("""
             "📺✨ Bem-vindo(a) ao seu canal de Doramas e Séries Asiáticas! ✨🎬
 
@@ -32,9 +32,9 @@ OBS: Você receberá o link para o grupo POR EMAIL após confirmação do pagame
 
 Prepare a pipoca e vamos maratonar juntos! 🍿🔥"""
     )
-    await update.message.reply_text(mensagem, parse_mode="Markdown")
+    update.message.reply_text(mensagem, parse_mode="Markdown")
 
-async def pagamento(update: Update, context: ContextTypes.DEFAULT_TYPE):
+def pagamento(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
         [
             InlineKeyboardButton("💳 Pagamento Único", callback_data="unico"),
@@ -42,18 +42,18 @@ async def pagamento(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    await update.message.reply_text("Qual forma de pagamento deseja?", reply_markup=reply_markup)
+    update.message.reply_text("Qual forma de pagamento deseja?", reply_markup=reply_markup)
 
-async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
+def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
-    await query.answer()
+    query.answer()
 
     if query.data == "unico":
-        await query.edit_message_text(f"🔗 Pagamento Único:\n{link_pagamento_unico}")
+        query.edit_message_text(f"🔗 Pagamento Único:\n{link_pagamento_unico}")
     elif query.data == "plus":
-        await query.edit_message_text(f"⭐ Assinatura Plus Mensal:\n{link_assinatura_plus}")
+        query.edit_message_text(f"⭐ Assinatura Plus Mensal:\n{link_assinatura_plus}")
 
-async def main():
+def main():
     app = ApplicationBuilder().token(TOKEN).build()
 
     app.add_handler(CommandHandler("start", start))
@@ -61,8 +61,8 @@ async def main():
     app.add_handler(CallbackQueryHandler(button))
 
     print("🤖 Bot iniciado!")
-    await app.run_polling()
+    app.run_polling()
 
 if __name__ == "__main__":
-    import asyncio
-    asyncio.run(main())
+    main()
+
