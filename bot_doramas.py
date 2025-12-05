@@ -12,7 +12,7 @@ link_pagamento_unico = "https://pay.cakto.com.br/zngtq6q_676932"
 link_assinatura_plus = "https://pay.cakto.com.br/3aec7u6_676933"
 
 
-def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     mensagem = ("""
             "📺✨ Bem-vindo(a) ao seu canal de Doramas e Séries Asiáticas! ✨🎬
 
@@ -32,9 +32,9 @@ OBS: Você receberá o link para o grupo POR EMAIL após confirmação do pagame
 
 Prepare a pipoca e vamos maratonar juntos! 🍿🔥"""
     )
-    update.message.reply_text(mensagem, parse_mode="Markdown")
+    await update.message.reply_text(mensagem, parse_mode="Markdown")
 
-def pagamento(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def pagamento(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
         [
             InlineKeyboardButton("💳 Pagamento Único", callback_data="unico"),
@@ -42,16 +42,16 @@ def pagamento(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    update.message.reply_text("Qual forma de pagamento deseja?", reply_markup=reply_markup)
+    await update.message.reply_text("Qual forma de pagamento deseja?", reply_markup=reply_markup)
 
-def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
-    query.answer()
+    await query.answer()
 
     if query.data == "unico":
-        query.edit_message_text(f"🔗 Pagamento Único:\n{link_pagamento_unico}")
+        await query.edit_message_text(f"🔗 Pagamento Único:\n{link_pagamento_unico}")
     elif query.data == "plus":
-        query.edit_message_text(f"⭐ Assinatura Plus Mensal:\n{link_assinatura_plus}")
+        await query.edit_message_text(f"⭐ Assinatura Plus Mensal:\n{link_assinatura_plus}")
 
 def main():
     app = ApplicationBuilder().token(TOKEN).build()
